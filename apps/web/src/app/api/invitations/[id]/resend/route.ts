@@ -23,7 +23,7 @@ import {
   handleAuthError,
 } from "@repo/auth";
 import { rateLimit, logger } from "@repo/platform";
-import { sendInvitationEmail } from "@repo/email";
+import { createAdminClient } from "@repo/auth/src/supabaseAdmin";
 
 interface RouteParams {
   params: { id: string };
@@ -64,18 +64,19 @@ export async function POST(_request: Request, { params }: RouteParams) {
       `[INVITE] ${ctx.userId} resent invitation ${invitationId} in org ${ctx.organizationId}`
     );
 
-    const emailRes = await sendInvitationEmail({
-      to: result.invitation.email,
-      organizationName: ctx.organizationName || "Your Organization",
-      inviterName: ctx.userId,
-      role: result.invitation.role,
-      inviteUrl: result.inviteUrl
+    const supabaseAdmin = createAdminClient();
+    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.inviteUserByEmail(result.invitation.email, {
+      data: {
+        organization_id: ctx.organizationId,
+        role: result.invitation.role
+      },
+      redirectTo: result.inviteUrl,
     });
 
-    if (emailRes.error) {
-      logger.error(`[EMAIL] Failed to resend invitation email to ${result.invitation.email}`, emailRes.error);
+    if (authError) {
+      logger.error(`[EMAIL] Failed to resend Supabase invitation email to ${result.invitation.email}`, authError);
     } else {
-      logger.info(`[EMAIL] Resent invitation email to ${result.invitation.email}`);
+      logger.info(`[EMAIL] Resent Supabase invitation email to ${result.invitation.email}`);
     }
 
     return NextResponse.json({

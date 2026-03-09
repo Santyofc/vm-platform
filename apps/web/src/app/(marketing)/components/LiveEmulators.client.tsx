@@ -32,55 +32,46 @@ const DeviceEmulator = dynamic(
 // ---------------------------------------------------------------------------
 // Demo step data (static — defined outside component to avoid recreation)
 // ---------------------------------------------------------------------------
-const INITIAL_CODE = `import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { LineChart, Lock, Activity, Globe } from "lucide-react";
+const INITIAL_CODE = `import { KernelSync, LogStream } from '@zonasur/core';
+import { TelemetryProvider } from '@core/metrics';
 
-export const GlobalDashboard = () => {
-  const [metrics, setMetrics] = useState(null);
+// ==========================================
+// 🛡️ NUCLEUS CORE CONFIGURATION
+// ==========================================
+// Modify values below to observe real-time
+// synchronization across deployed shards.
 
-  // 1. Initialize Core State
-  usePulseEngineSystem();
+export const systemConfig = {
+  // ⚡ Global Performance Tuning
+  latency: "12ms",
+  activeNodes: 64,
+
+  // 🌐 Telemetry & Threat Assessment
+  connections: "1.2M",
+  threatLevel: "0.0%",
+};
+
+export default function KernelInitializer() {
+  const syncEngine = new KernelSync(systemConfig);
+  
+  syncEngine.on('threatDetected', (event) => {
+    LogStream.alert(\`Intrusion on node \${event.nodeId}\`);
+  });
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white overflow-hidden relative">
-      {/* 2. Global Power Mesh (Background Orbs) */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-zs-blue/20 blur-[120px] rounded-full mix-blend-screen" />
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-zs-violet/10 blur-[150px] rounded-full mix-blend-screen" />
-
-      {/* 3. Main Bento Architecture */}
-      <div className="relative z-10 grid grid-cols-12 gap-6 p-8 h-screen">
-        
-        {/* Identity Gateway (Sidebar) */}
-        <div className="col-span-3 custom-glass-panel rounded-3xl p-6 border border-white/5">
-          <IdentityHub session={activeSession} />
-        </div>
-
-        {/* Nucleus Analytics (Main Central View) */}
-        <div className="col-span-9 flex flex-col gap-6">
-          <div className="h-2/3 custom-glass-panel rounded-3xl p-8 border border-white/5 flex items-center justify-center relative overflow-hidden">
-             <GlobeVisualization nodes={64} active={true} />
-          </div>
-
-          {/* Real-time Telemetry (Bottom row) */}
-          <div className="h-1/3 grid grid-cols-3 gap-6">
-             <MetricCard title="E2E Latency" value="12ms" icon={<Activity />} trend="up" />
-             <MetricCard title="Active Connections" value="1.2M" icon={<Globe />} />
-             <MetricCard title="Threat Blocks" value="0.0%" icon={<Lock />} status="secure" />
-          </div>
-        </div>
-      </div>
-    </div>
+    <TelemetryProvider config={systemConfig}>
+      <AppRouter />
+    </TelemetryProvider>
   );
-};`;
+}`;
 
 const DEMO_STEPS = [
-  { author: "Santy", line: 33, target: 'value="12ms"', replacement: 'value="8ms"' },
-  { author: "Elena", line: 28, target: "nodes={64}", replacement: "nodes={128}" },
-  { author: "Santy", line: 34, target: 'value="1.2M"', replacement: 'value="2.4M"' },
-  { author: "Elena", line: 35, target: 'value="0.0%"', replacement: 'value="100%"' },
-  { author: "Santy", line: 33, target: 'value="8ms"', replacement: 'value="4ms"' },
-  { author: "Elena", line: 28, target: "nodes={128}", replacement: "nodes={256}" },
+  { author: "Santy", line: 11, target: 'latency: "12ms",', replacement: 'latency: "8ms",' },
+  { author: "Elena", line: 12, target: "activeNodes: 64,", replacement: "activeNodes: 128," },
+  { author: "Santy", line: 15, target: 'connections: "1.2M",', replacement: 'connections: "2.4M",' },
+  { author: "Elena", line: 16, target: 'threatLevel: "0.0%",', replacement: 'threatLevel: "100%",' },
+  { author: "Santy", line: 11, target: 'latency: "8ms",', replacement: 'latency: "4ms",' },
+  { author: "Elena", line: 12, target: "activeNodes: 128,", replacement: "activeNodes: 256," },
 ] as const;
 
 // ---------------------------------------------------------------------------
@@ -94,6 +85,7 @@ interface DemoState {
 
 type DemoAction =
   | { type: "STEP"; author: string; line: number; target: string; replacement: string; stepIndex: number }
+  | { type: "MANUAL_UPDATE"; code: string }
   | { type: "RESET" };
 
 function demoReducer(state: DemoState, action: DemoAction): DemoState {
@@ -104,6 +96,12 @@ function demoReducer(state: DemoState, action: DemoAction): DemoState {
         activeLines: { ...state.activeLines, [action.author]: [action.line] },
         stepIndex: action.stepIndex,
       };
+    case "MANUAL_UPDATE":
+      return {
+        ...state,
+        code: action.code,
+        activeLines: {}, // Clear active lines when user takes over
+      };
     case "RESET":
       return { code: INITIAL_CODE, activeLines: {}, stepIndex: 0 };
   }
@@ -113,11 +111,17 @@ function demoReducer(state: DemoState, action: DemoAction): DemoState {
 // Helpers — parse metrics from the current code string
 // ---------------------------------------------------------------------------
 function parseMetrics(code: string) {
+  // Relaxed regex to catch values even if the user deletes quotes or commas
+  const latencyMatch = code.match(/latency:\s*["']?(\d+)/i);
+  const nodesMatch = code.match(/activeNodes:\s*["']?(\d+)/i);
+  const connMatch = code.match(/connections:\s*["']?([\d.]+M?)/i);
+  const threatMatch = code.match(/threatLevel:\s*["']?([\d.]+%?)/i);
+
   return {
-    latency: code.match(/value="(.*?ms)"/)?.[1] ?? "12ms",
-    nodes: parseInt(code.match(/nodes=\{(\d+)\}/)?.[1] ?? "64", 10),
-    connections: code.match(/value="([\d.A-Z]+)" icon=\{<Globe/)?.[1] ?? "1.2M",
-    threats: code.match(/value="([\d.%]+)" icon=\{<Lock/)?.[1] ?? "0.0%",
+    latency: latencyMatch ? `${latencyMatch[1]}ms` : "12ms",
+    nodes: nodesMatch ? parseInt(nodesMatch[1], 10) : 64,
+    connections: connMatch ? connMatch[1] : "1.2M",
+    threats: threatMatch ? (threatMatch[1].includes('%') ? threatMatch[1] : `${threatMatch[1]}%`) : "0.0%",
   };
 }
 
@@ -129,6 +133,7 @@ export default function LiveEmulators() {
   const stepRef = useRef(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isVisibleRef = useRef(false);
+  const userInteractedRef = useRef(false);
 
   const [state, dispatch] = useReducer(demoReducer, {
     code: INITIAL_CODE,
@@ -141,7 +146,7 @@ export default function LiveEmulators() {
     if (!section) return;
 
     function runStep() {
-      if (!isVisibleRef.current) return;
+      if (!isVisibleRef.current || userInteractedRef.current) return;
 
       if (stepRef.current < DEMO_STEPS.length) {
         const step = DEMO_STEPS[stepRef.current];
@@ -185,6 +190,17 @@ export default function LiveEmulators() {
     };
   }, []);
 
+  const handleIDEChange = (newCode: string) => {
+    userInteractedRef.current = true;
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    dispatch({ type: "MANUAL_UPDATE", code: newCode });
+  };
+
+  const handleInteract = () => {
+    userInteractedRef.current = true;
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+  };
+
   const metrics = parseMetrics(state.code);
 
   return (
@@ -210,7 +226,7 @@ export default function LiveEmulators() {
             <div className="absolute -inset-4 bg-gradient-to-r from-zs-cyan/20 to-zs-blue/20 blur-xl opacity-0 group-hover:opacity-50 transition-opacity rounded-[2rem]" />
             <div className="flex-1 relative z-10 transition-transform duration-700 ease-out group-hover:rotate-y-[1deg] group-hover:scale-[1.01] rounded-[2rem] overflow-hidden border border-zs-border/50 bg-zs-bg-primary">
               <div className="absolute inset-0">
-                <IDEEmulator code={state.code} activeLines={state.activeLines} />
+                <IDEEmulator code={state.code} activeLines={state.activeLines} onChange={handleIDEChange} onInteract={handleInteract} />
               </div>
             </div>
             <div className="mt-6 text-center">

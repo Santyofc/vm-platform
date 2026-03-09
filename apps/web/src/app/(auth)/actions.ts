@@ -23,6 +23,10 @@ export async function signIn(formData: FormData) {
 export async function signUp(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
+  const nombre = formData.get("nombre") as string;
+  const cargo = formData.get("cargo") as string;
+  const empresa = formData.get("empresa") as string;
+
   const supabase = createClient();
 
   const { data, error } = await supabase.auth.signUp({
@@ -30,6 +34,11 @@ export async function signUp(formData: FormData) {
     password,
     options: {
       emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+      data: {
+        nombre: nombre || null,
+        cargo: cargo || null,
+        empresa: empresa || null,
+      }
     },
   });
 

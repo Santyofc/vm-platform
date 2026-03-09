@@ -52,26 +52,7 @@ export default function HeroDemo() {
       {/* Glow backdrop */}
       <div className="absolute -inset-10 bg-gradient-to-r from-zs-blue/10 to-zs-violet/10 blur-3xl rounded-full opacity-30 animate-pulse" />
 
-      {/* Mascot Layer - Higher depth */}
-      <motion.div
-        animate={{ y: [0, -15, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        style={{
-          rotateX: useTransform(rotateX, (v) => v * 2),
-          rotateY: useTransform(rotateY, (v) => v * 2),
-          translateZ: 50
-        }}
-        className="absolute -top-32 -right-16 z-20 w-80 h-80 drop-shadow-[0_0_35px_rgba(37,99,235,0.4)]"
-      >
-        <Image
-          src="/images/mascot.png"
-          alt="Zona Sur Tech Mascot"
-          fill
-          sizes="(max-width: 1024px) 0px, 320px"
-          className="object-contain"
-          priority
-        />
-      </motion.div>
+
 
       {/* Terminal Layer */}
       <motion.div 

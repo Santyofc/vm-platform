@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Search, Bell, Settings, ChevronDown, Loader2 } from "lucide-react";
+import { Search, Bell, Settings, ChevronDown, Loader2, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
 interface UserData {
   name: string;
@@ -65,15 +66,33 @@ export function DashboardHeader() {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             className="p-2 text-zs-text-secondary hover:text-white transition-colors"
+            title="Notificaciones"
           >
             <Bell className="w-5 h-5" />
           </motion.button>
+          
+          <Link href="/dashboard/settings" passHref legacyBehavior>
+            <motion.a
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className="p-2 text-zs-text-secondary hover:text-white transition-colors"
+              title="Configuración"
+            >
+              <Settings className="w-5 h-5" />
+            </motion.a>
+          </Link>
+
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            className="p-2 text-zs-text-secondary hover:text-white transition-colors"
+            onClick={async () => {
+              await fetch("/api/auth/logout", { method: "POST" });
+              window.location.href = "/";
+            }}
+            className="p-2 text-zs-text-secondary hover:text-red-400 transition-colors"
+            title="Cerrar Sesión"
           >
-            <Settings className="w-5 h-5" />
+            <LogOut className="w-5 h-5" />
           </motion.button>
         </div>
 

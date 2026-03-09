@@ -4,3 +4,4 @@ export * from "./components/GlowingBox";
 export * from "./components/LogoZS";
 export * from "./components/VisionCard";
 export * from "./MotionProvider";
+export * from "./hooks/use-debounce";

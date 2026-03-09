@@ -15,6 +15,7 @@ import {
     CheckCircle2
 } from 'lucide-react';
 import { CollaborativeLayer } from './CollaborativeLayer';
+import Editor from 'react-simple-code-editor';
 
 // --- Types & Data ---
 
@@ -114,16 +115,29 @@ const FileTree = ({ nodes, level = 0, activeFile, onSelect }: { nodes: FileNode[
 interface IDEEmulatorProps {
     code?: string;
     activeLines?: { [key: string]: number[] };
+    onChange?: (newCode: string) => void;
+    onInteract?: () => void;
 }
 
-export default function IDEEmulator({ code, activeLines: externalActiveLines }: IDEEmulatorProps) {
+export default function IDEEmulator({ code, activeLines: externalActiveLines, onChange, onInteract }: IDEEmulatorProps) {
     const [activeTab, setActiveTab] = useState('IDEEmulator.tsx');
     const [isVisible, setIsVisible] = useState(true);
     const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+    const [localCode, setLocalCode] = useState(code || "");
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const codeLines = (code || "").split('\n');
+    // Sync if parent changes code (e.g., demo loop)
+    useEffect(() => {
+        if (code !== undefined) {
+            setLocalCode(code);
+        }
+    }, [code]);
+
+    const handleCodeChange = (newLocalCode: string) => {
+        setLocalCode(newLocalCode);
+        if (onChange) onChange(newLocalCode);
+    };
 
     useEffect(() => {
         setPrefersReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
@@ -236,62 +250,76 @@ export default function IDEEmulator({ code, activeLines: externalActiveLines }: 
 
                     {/* Editor / Code Area */}
                     <div className="flex-1 relative overflow-hidden flex flex-col">
-                        <div className="flex-1 overflow-auto relative font-mono text-[10px] sm:text-sm leading-5 sm:leading-6 py-4 custom-scrollbar" ref={scrollContainerRef}>
+                        <div 
+                            className="flex-1 overflow-auto relative font-mono text-[10px] sm:text-sm leading-5 sm:leading-6 py-4 custom-scrollbar" 
+                            ref={scrollContainerRef}
+                            onPointerDown={() => {
+                                if (onInteract) onInteract();
+                            }}
+                        >
 
                             {/* Code Lines with Presence Gutter */}
-                            <div className="min-w-max px-4 pb-16">
-                                {codeLines.map((line, i) => {
-                                    const lineNum = i + 1;
-                                    const isSantyActive = activeSanty.includes(lineNum);
-                                    const isElenaActive = activeElena.includes(lineNum);
+                            <div className="min-w-max pb-16">
+                                <Editor
+                                    value={localCode}
+                                    onValueChange={handleCodeChange}
+                                    padding={0}
+                                    style={{
+                                        fontFamily: 'inherit',
+                                        fontSize: 'inherit',
+                                        lineHeight: 'inherit',
+                                    }}
+                                    className="w-full caret-white selection:bg-zs-blue/30"
+                                    textareaClassName="focus:outline-none pl-[3.75rem]"
+                                    preClassName="!m-0"
+                                    highlight={codeToHighlight => {
+                                        return (
+                                            <div className="w-full">
+                                                {codeToHighlight.split('\n').map((line, i) => {
+                                                    const lineNum = i + 1;
+                                                    const isSantyActive = activeSanty.includes(lineNum);
+                                                    const isElenaActive = activeElena.includes(lineNum);
 
-                                    // Very basic split to avoid replacing inside our own tags
-                                    // A robust solution would use PrismJS, but for this demo we'll use a safer regex approach
-                                    // that escapes HTML entities first, then wraps Keywords without colliding.
-                                    const safeHtml = line
-                                        .replace(/</g, '&lt;')
-                                        .replace(/>/g, '&gt;');
+                                                    const safeHtml = line
+                                                        .replace(/</g, '&lt;')
+                                                        .replace(/>/g, '&gt;');
 
-                                    // Basic Safe Highlighting
-                                    let highlighted = safeHtml;
+                                                    let highlighted = safeHtml;
+                                                    highlighted = highlighted.replace(/(".*?"|'.*?'|`.*?`)/g, '<span class="text-amber-300">$1</span>');
+                                                    highlighted = highlighted.replace(/\b(import|from|export|const|let|var|return|async|await)\b(?![^<]*>)/g, '<span class="text-pink-400">$1</span>');
+                                                    highlighted = highlighted.replace(/\b(useState|useEffect|console\.log)\b(?![^<]*>)/g, '<span class="text-sky-300">$1</span>');
+                                                    highlighted = highlighted.replace(/\b(React|motion|AnimatePresence|usePulseSync)\b(?![^<]*>)/g, '<span class="text-emerald-300">$1</span>');
+                                                    highlighted = highlighted.replace(/\b(className)\b(?![^<]*>)/g, '<span class="text-blue-300">$1</span>');
+                                                    highlighted = highlighted.replace(/\b(\d+)\b(?![^<]*>)/g, '<span class="text-violet-400">$1</span>');
+                                                    highlighted = highlighted.replace(/(\/\/[^\n]*)/g, '<span class="text-slate-500 italic">$1</span>');
 
-                                    // 1. Strings (amber-300)
-                                    highlighted = highlighted.replace(/(".*?"|'.*?'|`.*?`)/g, '<span class="text-amber-300">$1</span>');
-                                    // 2. Keywords (pink-400) - Only match if not inside an HTML tag
-                                    highlighted = highlighted.replace(/\b(import|from|export|const|let|var|return|async|await)\b(?![^<]*>)/g, '<span class="text-pink-400">$1</span>');
-                                    // 3. React/Hooks (sky-300)
-                                    highlighted = highlighted.replace(/\b(useState|useEffect|console\.log)\b(?![^<]*>)/g, '<span class="text-sky-300">$1</span>');
-                                    // 4. Component imports (emerald-300)
-                                    highlighted = highlighted.replace(/\b(React|motion|AnimatePresence)\b(?![^<]*>)/g, '<span class="text-emerald-300">$1</span>');
-                                    // 5. Constants (blue-300)
-                                    highlighted = highlighted.replace(/\b(className)\b(?![^<]*>)/g, '<span class="text-blue-300">$1</span>');
-                                    // 6. Comments (slate-500)
-                                    highlighted = highlighted.replace(/(\/\/[^\n]*)/g, '<span class="text-slate-500 italic">$1</span>');
-
-                                    return (
-                                        <div key={i} className="flex hover:bg-white/5 relative group">
-                                            {/* Gutter (Line numbers) */}
-                                            <div className="w-12 shrink-0 text-right pr-4 text-slate-600 select-none border-r border-transparent">
-                                                {lineNum}
+                                                    return (
+                                                        <div key={i} className="flex hover:bg-white/5 relative group">
+                                                            <div className="w-12 shrink-0 text-right pr-4 text-slate-600 select-none border-r border-transparent">
+                                                                {lineNum}
+                                                            </div>
+                                                            <div className="absolute left-10 w-[3px] h-full flex flex-col border-r border-[#1e1e1e]">
+                                                                {isSantyActive && <div className="h-full bg-blue-500" title="Santy" />}
+                                                                {isElenaActive && <div className="h-full bg-pink-500" title="Elena" />}
+                                                            </div>
+                                                            <div className="pl-3 whitespace-pre text-slate-300 pointer-events-none">
+                                                                {line === "" ? <br/> : <span dangerouslySetInnerHTML={{ __html: highlighted }} />}
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                })}
                                             </div>
-
-                                            {/* Presence Indicator Lines */}
-                                            <div className="absolute left-10 w-[3px] h-full flex flex-col border-r border-[#1e1e1e]">
-                                                {isSantyActive && <div className="h-full bg-blue-500" title="Santy" />}
-                                                {isElenaActive && <div className="h-full bg-pink-500" title="Elena" />}
-                                            </div>
-
-                                            {/* Code Highlight Simulator */}
-                                            <div className="pl-6 whitespace-pre text-slate-300">
-                                                <span dangerouslySetInnerHTML={{ __html: highlighted }} />
-                                            </div>
-                                        </div>
-                                    )
-                                })}
+                                        );
+                                    }}
+                                />
                             </div>
 
-                            {/* Collaborative Layer (Remote Cursors & Auto-Typing) */}
-                            <CollaborativeLayer pause={!isVisible || prefersReducedMotion} />
+
+                            {/* Collaborative Layer (Remote Cursors) */}
+                            <CollaborativeLayer 
+                                pause={!isVisible || prefersReducedMotion} 
+                                activeLinesMap={externalActiveLines}
+                            />
 
                         </div>
                     </div>

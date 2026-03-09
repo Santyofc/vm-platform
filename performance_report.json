@@ -1,0 +1,32 @@
+[
+  {
+    "Route": "/",
+    "ResponseTime": "532 ms",
+    "Status": "Operational"
+  },
+  {
+    "Route": "/about",
+    "ResponseTime": "151 ms",
+    "Status": "Operational"
+  },
+  {
+    "Route": "/pricing",
+    "ResponseTime": "190 ms",
+    "Status": "Operational"
+  },
+  {
+    "Route": "/blog",
+    "ResponseTime": "180 ms",
+    "Status": "Operational"
+  },
+  {
+    "Route": "/docs",
+    "ResponseTime": "145 ms",
+    "Status": "Operational"
+  },
+  {
+    "Route": "/status",
+    "ResponseTime": "165 ms",
+    "Status": "Operational"
+  }
+]

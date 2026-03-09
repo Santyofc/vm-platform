@@ -114,8 +114,8 @@ export default function DeviceEmulator({
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <div className="text-[10px] text-zs-text-muted font-mono bg-black/40 px-3 py-1 rounded-full border border-zs-border">
-                        {url}
+                    <div className="text-[10px] text-zs-text-muted font-mono bg-black/40 px-3 py-1 rounded-full border border-zs-border flex">
+                        <Activity size={12} className="text-zs-emerald mr-2" /> Live Environment
                     </div>
                     <button onClick={handleRefresh} className={styles.btn} title="Reload Iframe">
                         <RotateCcw size={16} />

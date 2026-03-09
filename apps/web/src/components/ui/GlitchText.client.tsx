@@ -21,9 +21,14 @@ export function GlitchText({
   once = true 
 }: GlitchTextProps) {
   const [displayText, setDisplayText] = useState("");
+  const [isMounted, setIsMounted] = useState(false);
   const ref = React.useRef(null);
   const isInView = useInView(ref, { once, amount: 0.5 });
   const [hasAnimated, setHasAnimated] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const startAnimation = useCallback(() => {
     let iteration = 0;
@@ -41,23 +46,29 @@ export function GlitchText({
       );
 
       if (iteration >= text.length) {
+        iteration = text.length; // Ensure it finishes on the actual text
         clearInterval(interval);
         setHasAnimated(true);
       }
 
-      iteration += text.length / (duration * 20); // Adjust speed based on duration
+      iteration += Math.max(0.1, text.length / (duration * 20)); // Adjust speed based on duration
     }, 30);
 
     return () => clearInterval(interval);
   }, [text, duration]);
 
   useEffect(() => {
-    if (isInView && !hasAnimated) {
-       setTimeout(() => {
+    if (isMounted && isInView && !hasAnimated) {
+       const timer = setTimeout(() => {
          startAnimation();
        }, delay * 1000);
+       return () => clearTimeout(timer);
     }
-  }, [isInView, hasAnimated, startAnimation, delay]);
+  }, [isMounted, isInView, hasAnimated, startAnimation, delay]);
+
+  // Initial state should be stable for hydration
+  // We use the original text or empty string, but NOT random noise during SSR
+  const initialContent = isMounted ? (displayText || (isInView ? "" : text)) : text;
 
   return (
     <motion.span
@@ -66,7 +77,7 @@ export function GlitchText({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
-      {displayText || (isInView ? "" : text.split("").map(() => GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)]).join(""))}
+      {initialContent}
     </motion.span>
   );
 }

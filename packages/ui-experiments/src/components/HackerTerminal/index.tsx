@@ -41,9 +41,10 @@ export default function HackerTerminal() {
 
         // Native commands
         const nativeCommands: Record<string, string> = {
-            'help': 'Available commands:\n- status: Check system status\n- logs: View recent activity\n- sys-info: Detailed hardware specifications\n- hack: [REDACTED]\n- clear: Purge terminal history\n- exit: Terminate session',
+            'help': 'Available commands:\n- status: Check system status\n- logs: View recent activity\n- sys-info: Detailed hardware specifications\n- viz: [NEW] Toggle Neural Visualization\n- hack: [REDACTED]\n- clear: Purge terminal history\n- exit: Terminate session',
             'status': 'SYSTEM STATUS: OPERATIONAL\nVULNERABILITIES: 0\nUPTIME: 142:32:04\nLOAD: 1.2% | MEM: 452MB | CPU: 2.1GHz',
             'sys-info': 'HARDWARE ARCHITECTURE: x86_64\nQUANTUM COMPUTE CORES: 128 [STABLE]\nGRID SYNC: ACTIVE [0ms OFFSET]\nNEURAL INTERFACE: OPTICAL_LINK_8G',
+            'viz': 'NEURAL VISUALIZATION INITIALIZED.\nSyncing with API Reference Matrix... [OK]',
             'logs': `[${new Date().toLocaleTimeString()}] INBOUND CONNECTION FROM 192.168.1.104\n[${new Date().toLocaleTimeString()}] AUTHENTICATION SUCCESSFUL (root)\n[${new Date().toLocaleTimeString()}] MODULE "CURSOR_TRAIL" INITIALIZED\n[${new Date().toLocaleTimeString()}] SWARM_ENGINE_v2 COLD START`,
             'hack': 'ACCESS DENIED. AUTHORIZATION LEVEL 4 REQUIRED.\nSecurity bypass attempt logged.',
             'exit': 'Terminating session... Goodbye.'

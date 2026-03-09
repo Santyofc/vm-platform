@@ -12,7 +12,7 @@
  * All errors are caught and shown inline; backend validation is the final gate.
  */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Crown, AlertCircle, UserMinus } from "lucide-react";
 import {
@@ -65,49 +65,79 @@ export function MembersTable({
   currentUserRole,
   onRefresh,
 }: MembersTableProps) {
+  const [localMembers, setLocalMembers] = useState<OrganizationMember[]>(members);
+
   const [dialog, setDialog] = useState<Dialog>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const canUpdate = ["owner", "admin"].includes(currentUserRole);
-  const canRemove = ["owner", "admin"].includes(currentUserRole);
-  const isOwner = currentUserRole === "owner";
+  // Keep local state in sync with server data when props update
+  useEffect(() => {
+    setLocalMembers(members);
+  }, [members]);
 
   async function handleConfirm() {
     if (!dialog) return;
+    
+    // Save original state for rollback
+    const originalMembers = [...localMembers];
+    const targetMemberId = dialog.member.membershipId;
+
+    // Apply optimistic updates to local state
+    if (dialog.type === "change-role") {
+      setLocalMembers(prev => prev.map(m => 
+        m.membershipId === targetMemberId ? { ...m, role: dialog.newRole } : m
+      ));
+    } else if (dialog.type === "suspend") {
+      setLocalMembers(prev => prev.map(m => 
+        m.membershipId === targetMemberId ? { ...m, status: "suspended" } : m
+      ));
+    } else if (dialog.type === "reactivate") {
+      setLocalMembers(prev => prev.map(m => 
+        m.membershipId === targetMemberId ? { ...m, status: "active" } : m
+      ));
+    } else if (dialog.type === "remove") {
+      setLocalMembers(prev => prev.filter(m => m.membershipId !== targetMemberId));
+    }
+
     setLoading(true);
     setActionError(null);
 
     try {
       switch (dialog.type) {
         case "change-role":
-          await apiUpdateMemberRole(dialog.member.membershipId, dialog.newRole);
+          await apiUpdateMemberRole(targetMemberId, dialog.newRole);
           break;
         case "suspend":
-          await apiUpdateMemberStatus(dialog.member.membershipId, "suspended");
+          await apiUpdateMemberStatus(targetMemberId, "suspended");
           break;
         case "reactivate":
-          await apiUpdateMemberStatus(dialog.member.membershipId, "active");
+          await apiUpdateMemberStatus(targetMemberId, "active");
           break;
         case "remove":
-          await apiRemoveMember(dialog.member.membershipId);
+          await apiRemoveMember(targetMemberId);
           break;
         case "transfer":
           await apiTransferOwnership(dialog.member.userId);
           break;
       }
       setDialog(null);
-      onRefresh();
+      onRefresh(); // Trigger parent refresh to ensure server sync
     } catch (err) {
-      const msg =
-        err instanceof ApiFetchError ? err.message : "Action failed. Try again.";
+      // Rollback on failure
+      setLocalMembers(originalMembers);
+      const msg = err instanceof ApiFetchError ? err.message : "Action failed. Try again.";
       setActionError(msg);
     } finally {
       setLoading(false);
     }
   }
 
-  if (members.length === 0) {
+  const canUpdate = ["owner", "admin"].includes(currentUserRole);
+  const canRemove = ["owner", "admin"].includes(currentUserRole);
+  const isOwner = currentUserRole === "owner";
+
+  if (localMembers.length === 0) {
     return (
       <EmptyState
         icon={<UserMinus className="w-6 h-6" />}
@@ -135,7 +165,7 @@ export function MembersTable({
             </tr>
           </thead>
           <tbody>
-            {members.map((member, i) => {
+            {localMembers.map((member, i) => {
               const isSelf = member.userId === currentUserId;
               const isTargetOwner = member.role === "owner";
               const displayName =

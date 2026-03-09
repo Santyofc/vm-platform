@@ -12,25 +12,25 @@ const footerLinks = [
             { name: "Sistemas", href: "/systems" },
             { name: "Infraestructura", href: "/infra" },
             { name: "Seguridad", href: "/security" },
-            { name: "Precios", href: "/coming-soon" },
+            { name: "Precios", href: "/pricing" },
         ],
     },
     {
         title: "Empresa",
         links: [
             { name: "Nosotros", href: "/about" },
-            { name: "Carreras", href: "/coming-soon" },
-            { name: "Blog", href: "/coming-soon" },
+            { name: "Carreras", href: "/careers" },
+            { name: "Blog", href: "/blog" },
             { name: "Contacto", href: "/contact" },
         ],
     },
     {
         title: "Recursos",
         links: [
-            { name: "Documentación", href: "/coming-soon" },
-            { name: "API Reference", href: "/coming-soon" },
-            { name: "Comunidad", href: "/coming-soon" },
-            { name: "Estado", href: "/coming-soon" },
+            { name: "Documentación", href: "/docs" },
+            { name: "API Reference", href: "/api-reference" },
+            { name: "Comunidad", href: "/community" },
+            { name: "Estado", href: "/status" },
         ],
     },
 ];

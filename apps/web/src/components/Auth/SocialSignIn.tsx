@@ -57,7 +57,7 @@ const SocialSignIn = () => {
             </clipPath>
           </defs>
         </svg>
-        <span className="text-sm font-bold tracking-tight">Identity Sync (Google)</span>
+        <span className="text-sm font-bold tracking-tight">Continuar con Google</span>
       </button>
 
       <button
@@ -77,7 +77,7 @@ const SocialSignIn = () => {
             fill="currentColor"
           />
         </svg>
-        <span className="text-sm font-bold tracking-tight">Identity Sync (GitHub)</span>
+        <span className="text-sm font-bold tracking-tight">Continuar con GitHub</span>
       </button>
     </div>
   );

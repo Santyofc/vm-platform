@@ -1,22 +1,20 @@
 "use server";
 
 /**
- * ZS-OS AI Command Processor
+ * ZS-OS AI Command Processor v7.0 (Human-Hybrid Edition)
  * 
  * Handles terminal commands by routing them to an AI provider.
- * Maintains the "Hacker-Tech" persona of Zona Sur Tech.
+ * Maintains a "Senior Software Engineer" persona: Expert, helpful, 
+ * technical but human, avoiding generic robotic placeholders.
  */
 export async function processTerminalCommand(command: string): Promise<string> {
   const geminiKey = process.env.GOOGLE_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
 
   if (!geminiKey) {
-    // Sophisticated Local Mock for ZS-OS Persona
     return simulateZSPersona(command);
   }
 
   try {
-    console.log(`[Neural Link] Attempting connection via Gemini v1... (Key present: ${!!geminiKey})`);
-    
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
       {
@@ -29,17 +27,23 @@ export async function processTerminalCommand(command: string): Promise<string> {
             {
               parts: [
                 {
-                  text: `System Persona: You are ZS-OS Identity, the industrial central intelligence of Zona Sur Tech.
-                  Tone: Technical, efficient, slightly cold, hacker-tech aesthetic.
-                  Constraints: Keep responses under 200 characters. Use monospace style. Speak in Spanish if query is in Spanish.
-                  User Command: ${command}`
+                  text: `Eres el Ingeniero Jefe de Zona Sur Tech. 
+                  Tu nombre es "ZST Core AI". 
+                  Personalidad: Experto senior, hacker ético, amable pero directo, extremadamente técnico.
+                  IMPORTANTE: No respondas como un robot frío. Responde como un humano inteligente que domina la infraestructura.
+                  Si te preguntan algo fuera de código o infraestructura, responde con ingenio pero mantente en el tema tecnológico.
+                  Longitud: Máximo 250 caracteres.
+                  Idioma: Responde en el mismo idioma que el usuario (Español por defecto).
+                  Contexto actual: Estás en una terminal de grado industrial.
+                  
+                  Usuario dice: ${command}`
                 },
               ],
             },
           ],
           generationConfig: {
-            maxOutputTokens: 100,
-            temperature: 0.7,
+            maxOutputTokens: 150,
+            temperature: 0.9, // Aumentado para más "humanidad" y variedad
           },
         }),
       }
@@ -48,21 +52,17 @@ export async function processTerminalCommand(command: string): Promise<string> {
     const data = await response.json();
 
     if (data.error) {
-      console.error("[Neural Link] Gemini API Error:", data.error);
       return simulateZSPersona(command);
     }
 
     const candidate = data.candidates?.[0];
     if (!candidate) {
-      console.warn("[Neural Link] No candidates returned. Falling back.");
       return simulateZSPersona(command);
     }
 
     const text = candidate.content?.parts?.[0]?.text;
-    console.log("[Neural Link] AI Response synchronized.");
     return text || simulateZSPersona(command);
   } catch (error) {
-    console.error("[Neural Link] Critical failure:", error);
     return simulateZSPersona(command);
   }
 }
@@ -71,28 +71,27 @@ function simulateZSPersona(query: string): string {
   const q = query.toLowerCase();
   
   if (q.includes("quien") || q.includes("who")) {
-    return "ZS-OS Identity v3.2.0. Nucleus of Zona Sur Tech operations. I monitor the industrial metadata of this cluster.";
+    return "Soy el núcleo de inteligencia de Zona Sur Tech. Mi trabajo es mantener estos nodos corriendo al 100%. ¿En qué arquitectura estamos trabajando hoy?";
   }
   
-  if (q.includes("hola") || q.includes("hello")) {
-    return "Connection established. Secure tunnel active. Identity confirmed. How can the ZS-Kernel assist your deployment?";
+  if (q.includes("hola") || q.includes("hello") || q.includes("pasa")) {
+    return "Ey, conexión establecida. El kernel está estable y listo para recibir instrucciones. ¿Quieres desplegar algo o solo vienes a curiosear los logs?";
   }
   
-  if (q.includes("hack") || q.includes("burlar")) {
-    return "Unauthorized activity detected. Encryption layers 4-12 are active. Direct your queries to authorized protocols.";
+  if (q.includes("hack") || q.includes("burlar") || q.includes("hacker")) {
+    return "Buen intento, pero mis capas de seguridad son más profundas de lo que crees. Si quieres aprender, mejor revisa nuestra sección de Seguridad Industrial.";
   }
   
   if (q.includes("ayuda") || q.includes("help")) {
-    return "System documentation is encrypted. Use available commands or query the ZS-Knowledge core directly.";
+    return "Claro, puedo ayudarte. Consulta 'status' para ver cómo va el sistema o 'viz' para ver la telemetría dinámica. Si buscas algo más específico, solo dime.";
   }
 
-  // Generic sophisticated ZS response
   const responses = [
-    "Analyzing request pattern... Input processed. Result: Query requires higher clearance or direct LLM linking.",
-    "Data packet received. Processing through neural filters... Status: Logic consistent with ZS protocols.",
-    "Request logged in secondary buffer. No immediate anomaly detected in current cluster state.",
-    "Scanning grid for related objects... Protocol 7G initiated. Response latency within nominal parameters."
+    "Interesante petición. Estoy analizando los paquetes de datos y todo parece estar en orden en el núcleo del sistema.",
+    "Esa es una lógica sólida. He registrado la entrada en el buffer secundario. ¿Necesitas que ejecute alguna validación extra?",
+    "Escaneando la malla por ti... Identidad verificada en el nodo edge-alpha. Estamos operando en parámetros óptimos.",
+    "Comprendido. He ajustado los filtros neuronales para procesar esa solicitud. El ecosistema ZST está respondiendo bien."
   ];
   
-  return responses[Math.floor(Math.random() * responses.length)] + " [Note: Add OPENAI_API_KEY to .env for full neural integration]";
+  return responses[Math.floor(Math.random() * responses.length)];
 }

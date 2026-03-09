@@ -20,6 +20,12 @@ const menuData: Menu[] = [
     newTab: false,
   },
   {
+    id: 4,
+    title: "Docs",
+    path: "/docs",
+    newTab: false,
+  },
+  {
     id: 5,
     title: "Contact",
     path: "/contact",
@@ -28,7 +34,7 @@ const menuData: Menu[] = [
   {
     id: 5,
     title: "Blog",
-    path: "/blogs",
+    path: "/blog",
     newTab: false,
   },
   {
@@ -57,7 +63,7 @@ const menuData: Menu[] = [
       {
         id: 64,
         title: "Blog Grid Page",
-        path: "/blogs",
+        path: "/blog",
         newTab: false,
       },
       {
