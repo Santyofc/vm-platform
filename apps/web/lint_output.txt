@@ -1,0 +1,420 @@
+
+> @repo/web@0.1.0 lint C:\Users\Dev Profile\Desktop\vm-platform\apps\web
+> next lint
+
+
+ ÔÜá The Next.js plugin was not detected in your ESLint configuration. See https://nextjs.org/docs/basic-features/eslint#migrating-existing-config
+
+./src/app/(app)/dashboard/layout.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(app)/dashboard/page.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(app)/dashboard/team/page.tsx
+27:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(app)/invitations/accept/layout.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(app)/invitations/accept/page.tsx
+19:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(app)/layout.tsx
+1:1  Error: Parsing error: The keyword 'export' is reserved
+
+./src/app/(app)/onboarding/page.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(app)/test/page.tsx
+1:1  Error: Parsing error: The keyword 'export' is reserved
+
+./src/app/(auth)/actions.ts
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(auth)/forgot-password/page.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(auth)/reset-password/[token]/page.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(auth)/signin/page.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(auth)/signup/page.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(marketing)/about/page.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(marketing)/blogs/page.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(marketing)/blogs/[slug]/page.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(marketing)/careers/page.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(marketing)/coming-soon/page.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(marketing)/contact/page.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(marketing)/error/page.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(marketing)/infra/page.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(marketing)/layout.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(marketing)/pricing/page.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(marketing)/security/page.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(marketing)/status/page.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(marketing)/systems/page.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/(marketing)/technology/page.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/api/activity/export/route.ts
+8:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/api/activity/route.ts
+11:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/api/auth/login/route.ts
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/api/auth/logout/route.ts
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/api/auth/me/route.ts
+13:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/api/auth/register/route.ts
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/api/auth/session/route.ts
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/api/auth/[...nextauth]/route.ts
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/api/cron/expire-invitations/route.ts
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/api/invitations/accept/route.ts
+20:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/api/invitations/route.ts
+6:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/api/invitations/[id]/resend/route.ts
+19:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/api/invitations/[id]/revoke/route.ts
+16:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/api/members/route.ts
+15:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/api/members/[membershipId]/role/route.ts
+18:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/api/members/[membershipId]/route.ts
+18:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/api/members/[membershipId]/status/route.ts
+17:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/api/oauth/decision/route.ts
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/api/organizations/route.ts
+25:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/api/organizations/switch/route.ts
+22:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/api/organizations/transfer-ownership/route.ts
+24:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/auth/callback/route.ts
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/gateway/page.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/head.tsx
+1:1  Error: Parsing error: The keyword 'export' is reserved
+
+./src/app/layout.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/not-found.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/oauth/consent/page.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/page.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/portfolio/page.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/app/providers.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/About/index.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Auth/ForgotPassword/index.tsx
+2:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Auth/ForgotPassword.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Auth/MagicLink/index.tsx
+2:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Auth/ResetPassword/index.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Auth/SignIn/index.tsx
+2:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Auth/SignUp/index.tsx
+2:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Auth/SocialSignIn.tsx
+2:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Auth/SwitchOption/index.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Blog/AuthorQuote.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Blog/HomeBlogSection.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Blog/index.tsx
+1:1  Error: Parsing error: The keyword 'const' is reserved
+
+./src/components/Blog/Newsletter.tsx
+1:1  Error: Parsing error: The keyword 'const' is reserved
+
+./src/components/Blog/PopularArticle.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Blog/SharePost.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Blog/SingleBlog.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Blog/TagButton.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/CallToAction/index.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Clients/clientsData.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Clients/index.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Clients/SingleClient.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Common/Breadcrumb.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Common/Loader.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Common/PreLoader.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Common/ScrollUp.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Common/SectionTitle.tsx
+1:1  Error: Parsing error: The keyword 'const' is reserved
+
+./src/components/Common/ZSCommand.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Contact/index.tsx
+1:1  Error: Parsing error: The keyword 'const' is reserved
+
+./src/components/Contact/TerminalFeedback.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/dashboard/ActivityFeed.tsx
+10:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/dashboard/auth/login-form.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/dashboard/auth/register-form.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/dashboard/dashboard/DashboardContent.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/dashboard/InvitationsPanel.tsx
+13:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/dashboard/layout/DashboardHeader.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/dashboard/layout/DashboardSidebar.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/dashboard/layout/ScrollToTop.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/dashboard/MembersTable.tsx
+15:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/dashboard/ui-primitives.tsx
+16:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/dashboard/WorkspaceSwitcher.tsx
+13:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Faq/index.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Faq/SingleFaq.tsx
+1:1  Error: Parsing error: The keyword 'const' is reserved
+
+./src/components/Features/featuresData.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Features/index.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Features/SingleFeature.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Footer/index.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Footer.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Header/index.tsx
+2:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Header/menuData.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Header/ThemeToggler.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Header.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Hero/index.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/NotFound/index.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Pricing/index.tsx
+2:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Pricing/OfferList.tsx
+1:1  Error: Parsing error: The keyword 'const' is reserved
+
+./src/components/Pricing/PricingBox.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/ScrollToTop/index.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/ScrollToTop.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Systems/SystemMap.tsx
+3:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Team/index.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Team/SingleTeam.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Testimonials/index.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/components/Testimonials/SingleTestimonial.tsx
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/lib/api.ts
+13:1  Error: Parsing error: The keyword 'export' is reserved
+
+./src/lib/supabase.ts
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/middleware.ts
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/stripe/pricingData.ts
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/types/blog.ts
+1:1  Error: Parsing error: The keyword 'export' is reserved
+
+./src/types/client.ts
+1:1  Error: Parsing error: The keyword 'export' is reserved
+
+./src/types/feature.ts
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/types/menu.ts
+1:1  Error: Parsing error: The keyword 'export' is reserved
+
+./src/types/price.ts
+1:1  Error: Parsing error: The keyword 'export' is reserved
+
+./src/types/team.ts
+1:1  Error: Parsing error: The keyword 'export' is reserved
+
+./src/types/testimonial.ts
+1:1  Error: Parsing error: The keyword 'export' is reserved
+
+./src/utils/email.ts
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/utils/markdown.ts
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/utils/markdownToHtml.ts
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/utils/supabase/client.ts
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/utils/supabase/server.ts
+1:1  Error: Parsing error: The keyword 'import' is reserved
+
+./src/utils/validateEmail.ts
+1:1  Error: Parsing error: The keyword 'export' is reserved
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+ÔÇëELIFECYCLEÔÇë Command failed with exit code 1.

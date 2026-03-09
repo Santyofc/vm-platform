@@ -11,7 +11,7 @@ export default function LoginPage() {
   useEffect(() => {
     // Redirige automáticamente al entorno seguro del Dashboard después de 1.5s
     const timer = setTimeout(() => {
-      window.location.href = `${process.env.NEXT_PUBLIC_DASHBOARD_URL}/login`;
+      router.push("/signin");
     }, 1500);
     return () => clearTimeout(timer);
   }, []);

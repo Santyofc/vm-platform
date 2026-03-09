@@ -8,6 +8,20 @@
       "when": 1772344589816,
       "tag": "0000_salty_sentinel",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1772935095228,
+      "tag": "0001_stale_blazing_skull",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1772959783101,
+      "tag": "0002_drop_rate_limits",
+      "breakpoints": true
     }
   ]
 }

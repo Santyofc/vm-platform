@@ -160,7 +160,7 @@ export default function IDEEmulator({ code, activeLines: externalActiveLines }: 
     }, [externalActiveLines]);
 
     return (
-        <div className="flex flex-col w-full h-full min-h-[650px] max-h-[800px] bg-[#1e1e1e] rounded-xl shadow-2xl overflow-hidden border border-slate-700/50 text-slate-300 font-sans" ref={containerRef}>
+        <div className="flex flex-col w-full h-full min-h-[500px] md:min-h-[650px] max-h-[90vh] md:max-h-[800px] bg-[#1e1e1e] rounded-xl shadow-2xl overflow-hidden border border-slate-700/50 text-slate-300 font-sans" ref={containerRef}>
 
             {/* Window Header (macOS) */}
             <div className="h-9 bg-[#2d2d2d] flex items-center px-4 border-b border-black/20 shrink-0">
@@ -218,7 +218,7 @@ export default function IDEEmulator({ code, activeLines: externalActiveLines }: 
                 <div className="flex-1 flex flex-col min-w-0 bg-[#1e1e1e]">
 
                     {/* Editor Tabs */}
-                    <div className="h-9 bg-[#252526] flex items-end shrink-0 overflow-x-auto overflow-y-hidden">
+                    <div className="h-9 bg-[#252526] flex items-end shrink-0 overflow-x-auto overflow-y-hidden no-scrollbar">
                         <div className="h-full px-4 flex items-center gap-2 bg-[#1e1e1e] border-t border-t-blue-500 cursor-default shrink-0">
                             <FileCode2 size={14} className="text-blue-500" />
                             <span className="text-sm text-slate-200">{activeTab}</span>
@@ -230,13 +230,13 @@ export default function IDEEmulator({ code, activeLines: externalActiveLines }: 
                     </div>
 
                     {/* Breadcrumbs */}
-                    <div className="h-6 flex items-center px-4 text-xs text-slate-500 gap-1 shrink-0 border-b border-[#2b2b2b]">
-                        <span>src</span> <ChevronRight size={12} /> <span>components</span> <ChevronRight size={12} /> <span className="text-slate-300">{activeTab}</span>
+                    <div className="h-6 flex items-center px-4 text-xs text-slate-500 gap-1 shrink-0 border-b border-[#2b2b2b] overflow-hidden whitespace-nowrap">
+                        <span>src</span> <ChevronRight size={12} /> <span>components</span> <ChevronRight size={12} /> <span className="text-slate-300 truncate">{activeTab}</span>
                     </div>
 
                     {/* Editor / Code Area */}
                     <div className="flex-1 relative overflow-hidden flex flex-col">
-                        <div className="flex-1 overflow-auto relative font-mono text-sm leading-6 py-4" ref={scrollContainerRef}>
+                        <div className="flex-1 overflow-auto relative font-mono text-[10px] sm:text-sm leading-5 sm:leading-6 py-4 custom-scrollbar" ref={scrollContainerRef}>
 
                             {/* Code Lines with Presence Gutter */}
                             <div className="min-w-max px-4 pb-16">

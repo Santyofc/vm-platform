@@ -5,7 +5,7 @@ export default {
   out: "./drizzle",
   dialect: "postgresql",
   dbCredentials: {
-    connectionString:
+    url:
       process.env.DATABASE_URL ||
       "postgres://postgres:postgres@localhost:5432/vm_platform",
   },

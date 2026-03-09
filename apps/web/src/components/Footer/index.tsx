@@ -48,10 +48,15 @@ const Footer = () => {
                 Protocol
               </h4>
               <ul className="space-y-4">
-                {['Home', 'Infrastructure', 'Mission', 'Tactical'].map((link) => (
-                  <li key={link}>
-                    <Link href="#" className="text-sm font-bold text-zs-text-secondary transition-colors hover:text-zs-blue">
-                      {link}
+                {[
+                  { name: 'Home', path: '/' },
+                  { name: 'Infrastructure', path: '/infra' },
+                  { name: 'Mission', path: '/about' },
+                  { name: 'Tactical', path: '/systems' }
+                ].map((link) => (
+                  <li key={link.name}>
+                    <Link href={link.path} className="text-sm font-bold text-zs-text-secondary transition-colors hover:text-zs-blue">
+                      {link.name}
                     </Link>
                   </li>
                 ))}
@@ -65,10 +70,15 @@ const Footer = () => {
                 Directives
               </h4>
               <ul className="space-y-4">
-                {['Guidelines', 'Privacy', 'Legal', 'Terms'].map((link) => (
-                  <li key={link}>
-                    <Link href="#" className="text-sm font-bold text-zs-text-secondary transition-colors hover:text-zs-emerald">
-                      {link}
+                {[
+                  { name: 'Guidelines', path: '/coming-soon' },
+                  { name: 'Privacy', path: '/coming-soon' },
+                  { name: 'Legal', path: '/coming-soon' },
+                  { name: 'Terms', path: '/coming-soon' }
+                ].map((link) => (
+                  <li key={link.name}>
+                    <Link href={link.path} className="text-sm font-bold text-zs-text-secondary transition-colors hover:text-zs-emerald">
+                      {link.name}
                     </Link>
                   </li>
                 ))}

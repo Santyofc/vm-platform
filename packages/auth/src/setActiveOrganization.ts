@@ -17,8 +17,7 @@
  */
 
 import { cookies } from "next/headers";
-import { ACTIVE_ORG_COOKIE } from "./getActiveOrganization";
-import { createAdminClient } from "./supabaseAdmin";
+import { getMembershipContext, ACTIVE_ORG_COOKIE } from "./getMembershipContext";
 import { ForbiddenError } from "./errors";
 
 // ---------------------------------------------------------------------------
@@ -49,35 +48,8 @@ export async function setActiveOrganization(
   userId: string,
   organizationId: string
 ): Promise<SetActiveOrganizationResult> {
-  const supabase = createAdminClient();
-
-  // Verify active membership — the status check is critical here.
-  const { data: membership, error } = await supabase
-    .from("memberships")
-    .select("id, organization_id, status, organizations(id, name)")
-    .eq("user_id", userId)
-    .eq("organization_id", organizationId)
-    .single();
-
-  if (error || !membership) {
-    throw new ForbiddenError(
-      "You are not a member of the requested organization."
-    );
-  }
-
-  if (membership.status !== "active") {
-    throw new ForbiddenError(
-      "Your membership in this organization is not active."
-    );
-  }
-
-  const org = membership.organizations as unknown as
-    | { id: string; name: string }
-    | null;
-
-  if (!org) {
-    throw new ForbiddenError("Organization data could not be resolved.");
-  }
+  // Verify active membership — getMembershipContext handles validation and throws if invalid/inactive.
+  const ctx = await getMembershipContext(userId, organizationId);
 
   // Set the cookie — httpOnly, not accessible from JavaScript.
   const cookieStore = cookies();
@@ -91,7 +63,7 @@ export async function setActiveOrganization(
   });
 
   return {
-    organizationId: org.id,
-    organizationName: org.name,
+    organizationId: ctx.organizationId,
+    organizationName: ctx.organizationName,
   };
 }

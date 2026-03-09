@@ -2,7 +2,7 @@ import React from "react";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "404 - Not Found | Play SaaS Starter Kit and Boilerplate for Next.js",
+  title: "404 - Not Found | Zona Sur Tech - Next Generation SaaS",
 };
 
 export default function NotFound() {

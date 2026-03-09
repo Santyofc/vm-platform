@@ -214,6 +214,21 @@
     color: var(--color-zs-rose);
 }
 
+.ai {
+    color: var(--color-zs-cyan);
+    font-style: italic;
+    padding-left: 0.5rem;
+    border-left: 2px solid var(--terminal-blue);
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.loadingLine {
+    color: var(--color-zs-text-muted);
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+}
+
 .inputArea {
     display: flex;
     align-items: center;

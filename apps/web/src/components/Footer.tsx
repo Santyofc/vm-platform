@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Github, Twitter, Linkedin, Instagram, Mail, ArrowRight } from "lucide-react";
-import Image from "next/image";
+import { LogoZS } from "@repo/ui/src/components/LogoZS";
 
 const footerLinks = [
     {
@@ -36,10 +36,10 @@ const footerLinks = [
 ];
 
 const socialLinks = [
-    { icon: <Github className="w-5 h-5" />, href: "#", color: "hover:text-white" },
-    { icon: <Twitter className="w-5 h-5" />, href: "#", color: "hover:text-zs-blue" },
-    { icon: <Linkedin className="w-5 h-5" />, href: "#", color: "hover:text-zs-blue-lt" },
-    { icon: <Instagram className="w-5 h-5" />, href: "#", color: "hover:text-zs-violet" },
+    { icon: <Github className="w-5 h-5" />, href: "https://github.com/Santyofc", color: "hover:text-white" },
+    { icon: <Twitter className="w-5 h-5" />, href: "https://twitter.com/santidelgados_", color: "hover:text-zs-blue" },
+    { icon: <Linkedin className="w-5 h-5" />, href: "https://www.linkedin.com/in/santi-delgados/", color: "hover:text-zs-blue-lt" },
+    { icon: <Instagram className="w-5 h-5" />, href: "https://www.instagram.com/santidelgados_/", color: "hover:text-zs-violet" },
 ];
 
 export default function Footer() {
@@ -52,14 +52,9 @@ export default function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-20">
                     {/* Brand Column */}
                     <div className="lg:col-span-2">
-                        <Link href="/" className="flex items-center gap-4 mb-8">
-                            <div className="w-16 h-16 relative">
-                                <Image
-                                    src="/images/logo/logo-white.svg"
-                                    alt="logo"
-                                    fill
-                                    className="object-contain"
-                                />
+                        <Link href="/" className="flex items-center gap-4 mb-8 group">
+                            <div className="w-12 h-12 text-zs-blue group-hover:scale-110 transition-transform">
+                                <LogoZS className="w-full h-full" />
                             </div>
                             <div className="flex flex-col">
                                 <span className="text-2xl font-black text-white tracking-widest uppercase italic leading-none">
@@ -121,13 +116,13 @@ export default function Footer() {
                     </div>
 
                     <div className="flex items-center gap-8">
-                        <Link href="#" className="text-[10px] font-black uppercase tracking-widest text-zs-text-muted hover:text-white transition-colors">
+                        <Link href="/legal/privacy" className="text-[10px] font-black uppercase tracking-widest text-zs-text-muted hover:text-white transition-colors">
                             Privacidad
                         </Link>
-                        <Link href="#" className="text-[10px] font-black uppercase tracking-widest text-zs-text-muted hover:text-white transition-colors">
+                        <Link href="/legal/terms" className="text-[10px] font-black uppercase tracking-widest text-zs-text-muted hover:text-white transition-colors">
                             Términos
                         </Link>
-                        <Link href="#" className="text-[10px] font-black uppercase tracking-widest text-zs-text-muted hover:text-white transition-colors">
+                        <Link href="/legal/cookies" className="text-[10px] font-black uppercase tracking-widest text-zs-text-muted hover:text-white transition-colors">
                             Cookies
                         </Link>
                     </div>

@@ -66,9 +66,7 @@ const Header = () => {
   return (
     <>
       <header
-        className={`ud-header left-0 top-0 z-40 flex w-full items-center transition-all duration-300 ${sticky
-          ? "fixed z-[999] border-b border-zs-blue/10 bg-zs-bg-primary/80 backdrop-blur-xl shadow-zs-glow-blue/5"
-          : "absolute bg-transparent"
+        className={`fixed left-0 top-0 z-[999] flex w-full items-center transition-all duration-300 border-b border-zs-blue/10 bg-zs-bg-primary/80 backdrop-blur-xl shadow-zs-glow-blue/5 ${sticky ? "py-2" : "py-4"
           }`}
       >
         <div className="container">

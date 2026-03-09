@@ -21,11 +21,7 @@
  */
 
 import { requireAuth, type AuthenticatedUser } from "./requireAuth";
-import {
-  getActiveOrganization,
-  type ActiveOrganization,
-} from "./getActiveOrganization";
-import { getAuthorizationContext, type AuthorizationContext } from "./getAuthorizationContext";
+import { getMembershipContext, type MembershipContext } from "./getMembershipContext";
 import { ForbiddenError } from "./errors";
 import type { Permission } from "./permissions";
 
@@ -33,13 +29,7 @@ import type { Permission } from "./permissions";
 // Types
 // ---------------------------------------------------------------------------
 
-export interface PermissionContext
-  extends AuthenticatedUser,
-    ActiveOrganization,
-    Omit<AuthorizationContext, "membership"> {
-  /** The membership record UUID. */
-  membershipId: string;
-}
+export interface PermissionContext extends AuthenticatedUser, MembershipContext {}
 
 // ---------------------------------------------------------------------------
 // requirePermission
@@ -64,30 +54,21 @@ export async function requirePermission(
   // Step 1: Validate session.
   const authUser = await requireAuth();
 
-  // Step 2: Resolve & verify organization membership.
-  const orgContext = await getActiveOrganization(
+  // Step 2 & 3: Resolve & verify organization membership and context in one optimized call.
+  const membershipCtx = await getMembershipContext(
     authUser.userId,
     organizationId
   );
 
-  // Step 3: Load the full authorization context (membership + permissions).
-  const authzContext = await getAuthorizationContext(
-    authUser.userId,
-    orgContext.organizationId
-  );
-
-  // Step 4: Check that the role has the requested permission.
-  if (!authzContext.has(permission)) {
+  // Step 4: Check if the role has the requested permission.
+  if (!membershipCtx.hasPermission(permission)) {
     throw new ForbiddenError(
-      `You do not have the required permission: "${permission}".`
+      `Permission denied: "${permission}" required.`
     );
   }
 
   return {
     ...authUser,
-    ...orgContext,
-    permissions: authzContext.permissions,
-    has: authzContext.has.bind(authzContext),
-    membershipId: authzContext.membership.id,
+    ...membershipCtx,
   };
 }

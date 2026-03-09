@@ -8,3 +8,5 @@ export { default as HackerTerminal } from "./components/HackerTerminal/index";
 export { default as DeviceEmulator } from "./components/DeviceEmulator/index";
 export { default as Sparkline } from "./components/Sparkline/index";
 export { default as IDEEmulator } from './components/IDEEmulator';
+export { GlitchText } from "./components/GlitchText";
+export { AmbientParticles } from "./components/AmbientParticles.client";

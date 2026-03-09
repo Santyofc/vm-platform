@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './Terminal.module.css';
+import { processTerminalCommand } from '@/app/actions/ai';
 
 interface TerminalLine {
-    type: 'system' | 'command' | 'response' | 'error';
+    type: 'system' | 'command' | 'response' | 'error' | 'ai';
     content: string;
 }
 
@@ -15,6 +16,7 @@ export default function HackerTerminal() {
         { type: 'system', content: 'Type "help" for a list of available commands.' },
     ]);
     const [input, setInput] = useState('');
+    const [isProcessing, setIsProcessing] = useState(false);
     const outputRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -24,43 +26,67 @@ export default function HackerTerminal() {
         }
     }, [history]);
 
-    const handleCommand = (cmd: string) => {
-        const cleanCmd = cmd.trim().toLowerCase();
-        const newHistory: TerminalLine[] = [...history, { type: 'command', content: `> ${cmd}` }];
+    const addLine = (line: TerminalLine) => {
+        setHistory(prev => [...prev, line]);
+    };
 
-        switch (cleanCmd) {
-            case 'help':
-                newHistory.push({ type: 'response', content: 'Available commands:\n- status: Check system status\n- logs: View recent activity\n- sys-info: Detailed hardware specifications\n- hack: [REDACTED]\n- clear: Purge terminal history\n- exit: Terminate session' });
-                break;
-            case 'status':
-                newHistory.push({ type: 'response', content: 'SYSTEM STATUS: OPERATIONAL\nVULNERABILITIES: 0\nUPTIME: 142:32:04\nLOAD: 1.2% | MEM: 452MB | CPU: 2.1GHz' });
-                break;
-            case 'sys-info':
-                newHistory.push({ type: 'response', content: 'HARDWARE ARCHITECTURE: x86_64\nQUANTUM COMPUTE CORES: 128 [STABLE]\nGRID SYNC: ACTIVE [0ms OFFSET]\nNEURAL INTERFACE: OPTICAL_LINK_8G' });
-                break;
-            case 'logs':
-                newHistory.push({ type: 'response', content: `[${new Date().toLocaleTimeString()}] INBOUND CONNECTION FROM 192.168.1.104\n[${new Date().toLocaleTimeString()}] AUTHENTICATION SUCCESSFUL (root)\n[${new Date().toLocaleTimeString()}] MODULE "CURSOR_TRAIL" INITIALIZED\n[${new Date().toLocaleTimeString()}] SWARM_ENGINE_v2 COLD START` });
-                break;
-            case 'hack':
-                newHistory.push({ type: 'error', content: 'ACCESS DENIED. AUTHORIZATION LEVEL 4 REQUIRED.' });
-                newHistory.push({ type: 'system', content: 'Security bypass attempt logged.' });
-                break;
-            case 'clear':
-                setHistory([]);
-                return;
-            case 'exit':
-                newHistory.push({ type: 'system', content: 'Terminating session... Goodbye.' });
-                break;
-            default:
-                newHistory.push({ type: 'error', content: `Command not found: ${cleanCmd}` });
+    const handleCommand = async (cmd: string) => {
+        const cleanCmd = cmd.trim().toLowerCase();
+        addLine({ type: 'command', content: `> ${cmd}` });
+
+        if (cleanCmd === 'clear') {
+            setHistory([]);
+            return;
         }
 
-        setHistory(newHistory);
+        // Native commands
+        const nativeCommands: Record<string, string> = {
+            'help': 'Available commands:\n- status: Check system status\n- logs: View recent activity\n- sys-info: Detailed hardware specifications\n- hack: [REDACTED]\n- clear: Purge terminal history\n- exit: Terminate session',
+            'status': 'SYSTEM STATUS: OPERATIONAL\nVULNERABILITIES: 0\nUPTIME: 142:32:04\nLOAD: 1.2% | MEM: 452MB | CPU: 2.1GHz',
+            'sys-info': 'HARDWARE ARCHITECTURE: x86_64\nQUANTUM COMPUTE CORES: 128 [STABLE]\nGRID SYNC: ACTIVE [0ms OFFSET]\nNEURAL INTERFACE: OPTICAL_LINK_8G',
+            'logs': `[${new Date().toLocaleTimeString()}] INBOUND CONNECTION FROM 192.168.1.104\n[${new Date().toLocaleTimeString()}] AUTHENTICATION SUCCESSFUL (root)\n[${new Date().toLocaleTimeString()}] MODULE "CURSOR_TRAIL" INITIALIZED\n[${new Date().toLocaleTimeString()}] SWARM_ENGINE_v2 COLD START`,
+            'hack': 'ACCESS DENIED. AUTHORIZATION LEVEL 4 REQUIRED.\nSecurity bypass attempt logged.',
+            'exit': 'Terminating session... Goodbye.'
+        };
+
+        if (nativeCommands[cleanCmd]) {
+            addLine({ type: 'response', content: nativeCommands[cleanCmd] });
+            return;
+        }
+
+        // AI Fallback
+        setIsProcessing(true);
+        try {
+            const aiResponse = await processTerminalCommand(cmd);
+            
+            // "Typewriter" effect simulate
+            let currentText = "";
+            const words = aiResponse.split(" ");
+            
+            // Add initial empty AI line
+            setHistory(prev => [...prev, { type: 'ai', content: '' }]);
+            
+            for (let i = 0; i < words.length; i++) {
+                currentText += (i === 0 ? "" : " ") + words[i];
+                const textToSet = currentText;
+                setHistory(prev => {
+                    const newHistory = [...prev];
+                    newHistory[newHistory.length - 1] = { type: 'ai', content: textToSet };
+                    return newHistory;
+                });
+                await new Promise(r => setTimeout(r, 30));
+            }
+
+        } catch (error) {
+            addLine({ type: 'error', content: 'CRITICAL ERROR: AI UPLINK DISCONNECTED' });
+        } finally {
+            setIsProcessing(false);
+        }
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (input.trim()) {
+        if (input.trim() && !isProcessing) {
             handleCommand(input);
             setInput('');
         }
@@ -73,7 +99,7 @@ export default function HackerTerminal() {
     return (
         <div className={styles.container} onClick={focusInput}>
             <header className={styles.header}>
-                <div className={styles.title}>ZS_TERMINAL_EMULATOR_v3.1.2</div>
+                <div className={styles.title}>ZS_TERMINAL_EMULATOR_v3.2.0 [AI_ENABLED]</div>
                 <div className={styles.controls}>
                     <div className={styles.dot} />
                     <div className={styles.dot} />
@@ -87,6 +113,11 @@ export default function HackerTerminal() {
                         {line.content}
                     </div>
                 ))}
+                {isProcessing && (
+                    <div className={styles.loadingLine}>
+                        <span className={styles.cursor}>_</span> ANALYZING_REQUEST...
+                    </div>
+                )}
             </div>
 
             <form className={styles.inputArea} onSubmit={handleSubmit}>
@@ -98,6 +129,7 @@ export default function HackerTerminal() {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     autoFocus
+                    disabled={isProcessing}
                     spellCheck={false}
                     autoComplete="off"
                 />

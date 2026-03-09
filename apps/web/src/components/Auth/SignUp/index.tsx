@@ -10,7 +10,8 @@ import SwitchOption from "../SwitchOption";
 import { useState } from "react";
 import MagicLink from "../MagicLink";
 import Loader from "@/components/Common/Loader";
-import { signUp } from "@/app/(site)/(auth)/actions";
+import { signUp } from "@/app/(auth)/actions";
+import { LogoZS } from "@repo/ui/src/components/LogoZS";
 
 /**
  * ════════════════════════════════════════════════════════════
@@ -56,21 +57,8 @@ const SignUp = () => {
             {/* Logo & Identity */}
             <div className="mb-10 text-center">
               <Link href="/" className="inline-block group transition-transform hover:scale-105">
-                <div className="relative h-12 w-48 mx-auto">
-                  <Image
-                    src="/images/logo/logo.svg"
-                    alt="Zona Sur Tech"
-                    fill
-                    priority
-                    className="object-contain dark:hidden"
-                  />
-                  <Image
-                    src="/images/logo/logo-white.svg"
-                    alt="Zona Sur Tech"
-                    fill
-                    priority
-                    className="hidden dark:block object-contain"
-                  />
+                <div className="relative h-20 w-20 mx-auto">
+                  <LogoZS className="w-full h-full" />
                 </div>
               </Link>
               <h1 className="mt-6 font-display text-2xl font-black tracking-tight text-zs-text-primary">

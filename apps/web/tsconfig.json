@@ -10,24 +10,6 @@
     "paths": {
       "@/*": [
         "./src/*"
-      ],
-      "@repo/auth": [
-        "../../packages/auth/src"
-      ],
-      "@repo/auth/*": [
-        "../../packages/auth/*"
-      ],
-      "@repo/ui": [
-        "../../packages/ui/src"
-      ],
-      "@repo/ui/*": [
-        "../../packages/ui/*"
-      ],
-      "@repo/ui-experiments": [
-        "../../packages/ui-experiments/src"
-      ],
-      "@repo/ui-experiments/*": [
-        "../../packages/ui-experiments/*"
       ]
     }
   },

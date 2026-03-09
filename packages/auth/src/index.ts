@@ -25,10 +25,9 @@
  *   resendInvitation.ts      ← imports supabaseAdmin, logActivity, errors, invitations
  */
 
-// ---------------------------------------------------------------------------
-// Core JWT session utilities (used by middleware and login routes)
-// ---------------------------------------------------------------------------
-export { encrypt, decrypt, type SessionPayload } from "./session";
+// Core auth utilities are now legacy or handled via Supabase.
+// session.ts has been removed in favor of Supabase Auth as single source of truth.
+
 
 // ---------------------------------------------------------------------------
 // Role system
@@ -71,9 +70,18 @@ export {
 // Authentication
 // ---------------------------------------------------------------------------
 export { requireAuth, type AuthenticatedUser } from "./requireAuth";
+export { requireSuperAdmin } from "./requireSuperAdmin";
 
 // ---------------------------------------------------------------------------
-// Organization resolution
+// Membership context resolution (Consolidated)
+// ---------------------------------------------------------------------------
+export {
+  getMembershipContext,
+  type MembershipContext,
+} from "./getMembershipContext";
+
+// ---------------------------------------------------------------------------
+// Organization resolution (Deprecated / Legacy support)
 // ---------------------------------------------------------------------------
 export {
   getActiveOrganization,

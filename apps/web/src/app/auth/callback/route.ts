@@ -1,7 +1,6 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { encrypt } from "@repo/auth";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -30,22 +29,7 @@ export async function GET(request: Request) {
     );
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error && data.user) {
-      // Emit a unified JWT session cookie shared across all apps
-      const token = await encrypt({
-        userId: data.user.id,
-        organizationId: null,
-        role: "member",
-      });
-
-      const response = NextResponse.redirect(`${origin}${next}`);
-      response.cookies.set("session", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 86400,
-        path: "/",
-      });
-      return response;
+      return NextResponse.redirect(`${origin}${next}`);
     }
   }
 

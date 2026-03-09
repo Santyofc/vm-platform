@@ -18,6 +18,7 @@ import {
   jsonb,
   uniqueIndex,
   index,
+  integer,
 } from "drizzle-orm/pg-core";
 
 // ---------------------------------------------------------------------------
@@ -190,3 +191,5 @@ export const orgActivityLogs = pgTable(
     ),
   }),
 );
+
+

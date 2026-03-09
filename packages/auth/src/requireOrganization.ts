@@ -11,15 +11,15 @@
 
 import { requireAuth, type AuthenticatedUser } from "./requireAuth";
 import {
-  getActiveOrganization,
-  type ActiveOrganization,
-} from "./getActiveOrganization";
+  getMembershipContext,
+  type MembershipContext,
+} from "./getMembershipContext";
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-export interface OrganizationContext extends AuthenticatedUser, ActiveOrganization {}
+export interface OrganizationContext extends AuthenticatedUser, MembershipContext {}
 
 // ---------------------------------------------------------------------------
 // requireOrganization
@@ -53,11 +53,11 @@ export async function requireOrganization(
   // Step 1: Validate authentication (throws if invalid).
   const authUser = await requireAuth();
 
-  // Step 2: Resolve and verify organization membership (throws if not member).
-  const orgContext = await getActiveOrganization(authUser.userId, organizationId);
+  // Step 2 & 3: Resolve and verify organization membership in one optimized call.
+  const membershipCtx = await getMembershipContext(authUser.userId, organizationId);
 
   return {
     ...authUser,
-    ...orgContext,
+    ...membershipCtx,
   };
 }

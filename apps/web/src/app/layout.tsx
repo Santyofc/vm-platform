@@ -1,6 +1,3 @@
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import ScrollToTop from "../components/ScrollToTop";
 import "../styles/index.css";
 import "../styles/prism-vsc-dark-plus.css";
 import Providers from "./providers";
@@ -12,10 +9,18 @@ export const metadata: Metadata = {
   description: "High-performance architecture by ZonaSur Tech. Designed for extreme scalability and premium interactive experiences.",
 };
 
-import { ZSCommand } from "../components/Common/ZSCommand";
+const HackerCursor = dynamic(
+  () => import("../components/ui/HackerCursor.client").then((mod) => ({ default: mod.HackerCursor })),
+  { ssr: false }
+);
 
-const CursorTrail = dynamic(
-  () => import("@repo/ui-experiments").then((mod) => ({ default: mod.CursorTrail })),
+const ZSCommand = dynamic(
+  () => import("../components/Common/ZSCommand").then((mod) => ({ default: mod.ZSCommand })),
+  { ssr: false }
+);
+
+const ScrollToTop = dynamic(
+  () => import("../components/ScrollToTop"),
   { ssr: false }
 );
 
@@ -26,16 +31,12 @@ export default function RootLayout({
 }) {
   return (
     <html suppressHydrationWarning className="!scroll-smooth" lang="en">
-      <body>
+      <body className="bg-zs-bg-primary">
         <Providers>
-          <div className="isolate relative">
-            <CursorTrail />
+          <div className="isolate relative min-h-screen">
+            <HackerCursor />
             <ZSCommand />
-            <Header />
-
             {children}
-
-            <Footer />
             <ScrollToTop />
           </div>
         </Providers>
