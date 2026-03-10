@@ -1,0 +1,16 @@
+node_modules
+.git
+.next
+.turbo
+dist
+coverage
+!.env.example
+
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!turbo.json
+!tsconfig.base.json
+!apps/**
+!packages/**
+!supabase/**
