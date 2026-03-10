@@ -1,0 +1,34 @@
+# Nota: Este archivo es solo una plantilla/ejemplo y NO se ejecutará estando 
+# dentro de infra/ci/.
+#
+# Para activarlo, cópialo manualmente a la carpeta .github/workflows en la 
+# raíz del proyecto:
+#
+# mkdir -p .github/workflows
+# cp infra/ci/github-actions-deploy.yml .github/workflows/deploy.yml
+#
+# Una vez allí y luego de hacer un commit, GitHub Actions lo identificará
+# como un workflow válido.
+
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+            cd /opt/vm-platform
+            bash infra/scripts/deploy.sh

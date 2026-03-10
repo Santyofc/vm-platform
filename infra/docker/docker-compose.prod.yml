@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  web:
+    container_name: vm-platform-web
+    build:
+      context: /opt/vm-platform
+      dockerfile: /opt/vm-platform/apps/web/Dockerfile
+    env_file: /opt/vm-platform/.env
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+    ports:
+      - "127.0.0.1:3000:3000"
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
