@@ -68,6 +68,7 @@ ENV UPSTASH_REDIS_REST_TOKEN=$UPSTASH_REDIS_REST_TOKEN
 ENV JWT_SECRET=$JWT_SECRET
 ENV GOOGLE_GEMINI_API_KEY=$GOOGLE_GEMINI_API_KEY
 
+USER root
 RUN pnpm turbo run build --filter=@repo/web
 
 # ==========================================
