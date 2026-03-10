@@ -3,9 +3,20 @@
 Esta guía detalla los pasos exactos para preparar una VM limpia (Ubuntu 22.04/24.04) y realizar el primer despliegue.
 
 ## Requisitos
-- 1 VM limpia de Ubuntu 22.04/24.04.
+- 1 VM limpia de Ubuntu 22.04/24.04 (Ej: EC2 de AWS).
 - Acceso SSH (root o sudoer) a la VM.
-- Dominio DNS apuntando a la IP pública de la VM.
+
+## Configuración DNS
+El dominio zonasurtech.online debe tener un registro apuntando a tu IP Pública actual (`3.137.182.156`):
+
+- **Tipo:** `A Record`
+- **Host:** `@`
+- **Value:** `3.137.182.156`
+
+*(Opcional)*
+- **Tipo:** `A Record`
+- **Host:** `www`
+- **Value:** `3.137.182.156`
 
 ## 1. Inicialización de la VM
 Corre el script de inicialización para instalar Nginx, Docker, y Certbot:

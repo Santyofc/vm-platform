@@ -41,6 +41,9 @@ sudo systemctl enable docker
 sudo systemctl start docker
 
 echo "[3/4] Configuring UFW Firewall..."
+# Nota para AWS EC2: 
+# Debes asegurarte tambien de que tu 'Security Group' en AWS EC2 
+# permite el trafico Inbound para estos tres puertos: 22, 80, 443.
 sudo ufw allow OpenSSH
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
