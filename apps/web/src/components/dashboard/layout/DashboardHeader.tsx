@@ -119,17 +119,19 @@ export function DashboardHeader() {
             )}
           </div>
           <motion.button
-            whileHover={{ scale: 1.05, borderColor: "rgba(0, 247, 255, 0.5)" }}
+            whileHover={{ scale: 1.05, borderColor: "rgba(0, 247, 255, 0.4)" }}
             whileTap={{ scale: 0.98 }}
-            className="flex items-center gap-2.5 bg-zs-bg-secondary/80 p-1 pr-3.5 rounded-2xl border border-zs-border hover:border-zs-blue/50 transition-all"
+            className="flex items-center gap-3 bg-zs-bg-secondary/80 p-1.5 pr-4 rounded-2xl border border-zs-border hover:border-zs-blue/40 transition-all group"
           >
             <motion.div
               whileHover={{ rotate: 10 }}
-              className={`w-8 h-8 rounded-xl flex items-center justify-center text-sm font-black text-white shadow-zs-glow-blue transition-colors ${
+              className={`w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold text-white shadow-zs-glow-blue transition-all ${
                 user?.email === "admin@zonasurtech.online" ? "bg-zs-violet shadow-zs-glow-violet" : "bg-zs-blue"
               }`}
             >
-              {(user?.name?.charAt(0) || "U").toUpperCase()}
+              <span className="leading-none transform translate-y-[0.5px]">
+                {(user?.name?.charAt(0) || "U").toUpperCase()}
+              </span>
             </motion.div>
             <ChevronDown className="w-4 h-4 text-zs-text-secondary group-hover:text-white transition-colors" />
           </motion.button>
