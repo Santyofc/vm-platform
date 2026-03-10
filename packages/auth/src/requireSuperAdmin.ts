@@ -12,7 +12,7 @@ import { requireAuth, AuthenticatedUser } from "./requireAuth";
 import { ForbiddenError } from "./errors";
 
 // Master email with emergency global access
-const MASTER_ADMIN_EMAIL = "admin@santy.tech";
+const MASTER_ADMIN_EMAIL = "admin@zonasurtech.online";
 
 /**
  * Validates that the current user has global Super Admin privileges.

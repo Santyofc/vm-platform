@@ -16,6 +16,7 @@ import {
 import { requireSuperAdmin } from "@repo/auth";
 import { createClient } from "@supabase/supabase-js";
 import { AdminSearch } from "../components/AdminSearch";
+import { RealTimeLogs } from "./components/RealTimeLogs.client";
 
 // Internal admin client
 function createAdminClient() {
@@ -48,17 +49,17 @@ export default async function AdminActivityPage({ searchParams }: PageProps) {
     .from("org_activity_logs")
     .select(`
       id,
-      event_type,
+      action,
       metadata,
       created_at,
-      user_id,
+      actor_id,
       organization_id,
       organizations (name)
     `);
 
   if (query) {
-    // Attempt to filter by event type or organization name
-    dbQuery = dbQuery.or(`event_type.ilike.%${query}%, metadata->>name.ilike.%${query}%`);
+    // Attempt to filter by action or metadata name if exists
+    dbQuery = dbQuery.or(`action.ilike.%${query}%`);
   }
 
   const { data: logs, error } = await dbQuery
@@ -74,6 +75,7 @@ export default async function AdminActivityPage({ searchParams }: PageProps) {
         </div>
     );
   }
+
 
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-5 duration-700">
@@ -129,56 +131,7 @@ export default async function AdminActivityPage({ searchParams }: PageProps) {
             </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-zs-border bg-zs-bg-secondary/20">
-                <th className="px-6 py-4 text-[10px] font-black text-zs-text-secondary uppercase tracking-[0.2em] w-48">Timestamp</th>
-                <th className="px-6 py-4 text-[10px] font-black text-zs-text-secondary uppercase tracking-[0.2em] w-64">Event Type</th>
-                <th className="px-6 py-4 text-[10px] font-black text-zs-text-secondary uppercase tracking-[0.2em]">Context (Org/User)</th>
-                <th className="px-6 py-4 text-[10px] font-black text-zs-text-secondary uppercase tracking-[0.2em]">Payload Snippet</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zs-border/50 font-mono">
-              {logs.map((log: any) => (
-                <tr key={log.id} className="group hover:bg-zs-violet/5 transition-colors">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2 text-[10px] text-zs-text-muted">
-                        <Clock className="w-3 h-3" />
-                        {new Date(log.created_at).toLocaleTimeString()}
-                        <span className="opacity-50">/ {new Date(log.created_at).toLocaleDateString()}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
-                        {getEventIcon(log.event_type)}
-                        <span className={`text-[11px] font-black uppercase tracking-widest ${getEventColor(log.event_type)}`}>
-                            {log.event_type.replace(/_/g, ' ')}
-                        </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-2 text-[10px] text-white font-bold">
-                            <Building2 className="w-3 h-3 text-zs-text-muted" />
-                            {log.organizations?.name || "Global / System"}
-                        </div>
-                        <div className="flex items-center gap-2 text-[10px] text-zs-text-muted">
-                            <Users className="w-3 h-3" />
-                            {log.user_id.substring(0, 8)}...
-                        </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="text-[10px] text-zs-text-secondary truncate max-w-[400px] bg-zs-bg-secondary/50 px-2 py-1 rounded border border-zs-border group-hover:border-zs-violet/30 transition-colors">
-                        {JSON.stringify(log.metadata)}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <RealTimeLogs initialLogs={logs as any} />
 
         {/* Footer Navigation */}
         <div className="p-6 border-t border-zs-border bg-zs-bg-secondary/30 flex items-center justify-between">

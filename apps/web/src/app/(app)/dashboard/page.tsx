@@ -1,5 +1,7 @@
-import { requireOrganization, handleAuthError } from '@repo/auth';
+import { requireOrganization, handleAuthError, requireSuperAdmin, requireAuth } from '@repo/auth';
 import { DashboardContent } from '@/components/dashboard/dashboard/DashboardContent';
+import Link from 'next/link';
+import { Terminal, ShieldAlert } from 'lucide-react';
 
 export default async function DashboardPage() {
   try {
@@ -15,7 +17,8 @@ export default async function DashboardPage() {
         id: ctx.userId,
         email: ctx.email,
         name: ctx.authUser.user_metadata?.display_name || ctx.email.split('@')[0],
-      }
+      },
+      isSuperAdmin: !!ctx.authUser.app_metadata?.is_super_admin || ctx.email === "admin@zonasurtech.online"
     };
 
     return (
@@ -23,13 +26,49 @@ export default async function DashboardPage() {
         <DashboardContent session={session as any} />
       </div>
     );
-  } catch (error) {
-    // If it's a known auth/org error, we can handle it or let handleAuthError decide.
-    // However, for the UI, we might want a specific feedback view.
+  } catch (error: any) {
+    // Check if the user is a Super Admin even if they don't have an organization
+    try {
+      const authUser = await requireAuth();
+      const isSuperAdmin = !!authUser.authUser.app_metadata?.is_super_admin || authUser.email === "admin@zonasurtech.online";
+
+      if (isSuperAdmin) {
+        return (
+          <div className="flex flex-col items-center justify-center min-h-[80vh] bg-zs-bg-primary text-white p-6">
+            <div className="w-20 h-20 rounded-3xl bg-zs-violet/10 border border-zs-violet/20 flex items-center justify-center mb-8 relative">
+                <ShieldAlert className="w-10 h-10 text-zs-violet" />
+                <div className="absolute inset-0 bg-zs-violet/20 rounded-3xl blur-2xl animate-pulse" />
+            </div>
+            
+            <h1 className="text-4xl font-black tracking-tighter uppercase italic mb-4">
+              Kernel <span className="text-zs-violet shadow-zs-glow-violet">Detected</span>
+            </h1>
+            <p className="text-zs-text-secondary text-center max-w-md mb-10 font-medium">
+              Tu identidad ha sido verificada como <span className="text-white font-bold">Root Admin</span>. 
+              Aunque no perteneces a ninguna organización aún, tienes acceso total al Kernel de Zona Sur Tech.
+            </p>
+
+            <Link 
+              href="/admin" 
+              className="flex items-center gap-3 px-10 py-5 rounded-2xl bg-zs-violet text-white font-black uppercase tracking-[0.3em] text-xs shadow-zs-glow-violet/40 hover:scale-105 transition-all active:scale-95"
+            >
+              <Terminal className="w-5 h-5" />
+              Ingresar al Kernel
+            </Link>
+          </div>
+        );
+      }
+    } catch (authError) {
+      // Fallback to error handling if even requireAuth fails
+    }
+
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-zs-bg-primary text-zs-text-primary">
+      <div className="flex flex-col items-center justify-center min-h-[60vh] bg-zs-bg-primary text-zs-text-primary p-6">
         <h1 className="text-2xl font-bold mb-4">No active organization found</h1>
-        <p className="text-zs-text-secondary">Please complete onboarding or join an organization.</p>
+        <p className="text-zs-text-secondary text-center mb-8">Please complete onboarding or join an organization.</p>
+        <Link href="/onboarding" className="zs-btn-brand px-8 py-3 rounded-xl font-bold uppercase tracking-widest text-xs">
+            Start Onboarding
+        </Link>
       </div>
     );
   }

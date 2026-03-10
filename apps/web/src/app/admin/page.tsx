@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { 
   Users, 
   Layers, 
@@ -9,14 +10,53 @@ import {
   Search,
   ArrowUpRight
 } from "lucide-react";
+import { createClient } from "@supabase/supabase-js";
+import { requireSuperAdmin } from "@repo/auth";
 
-export default function AdminOverview() {
+// Internal admin client
+function createAdminClient() {
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!url || !key) {
+    throw new Error("[FATAL] SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY is not set.");
+  }
+
+  return createClient(url, key, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+}
+
+export default async function AdminOverview() {
+  await requireSuperAdmin();
+  const supabase = createAdminClient();
+
+  // 1. Fetch Real-time Metrics
+  const [usersRes, orgsRes, logsRes] = await Promise.all([
+      supabase.auth.admin.listUsers(),
+      supabase.from("organizations").select("id", { count: "exact", head: true }),
+      supabase.from("org_activity_logs")
+          .select(`
+            id,
+            action,
+            metadata,
+            created_at,
+            organizations (name)
+          `)
+          .order("created_at", { ascending: false })
+          .limit(5)
+  ]);
+
+  const totalUsers = usersRes.data?.users.length || 0;
+  const totalOrgs = orgsRes.count || 0;
+  const recentLogs = logsRes.data || [];
+
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-5 duration-700">
       {/* Welcome Heading */}
-      <div className="flex items-end justify-between">
+      <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6">
         <div>
-          <h1 className="text-5xl font-black text-white tracking-tighter uppercase italic italic leading-none mb-3">
+          <h1 className="text-5xl font-black text-white tracking-tighter uppercase italic leading-none mb-3">
             System <span className="text-zs-cyan">Overview</span>
           </h1>
           <p className="text-zs-text-secondary text-base font-medium max-w-xl">
@@ -24,8 +64,8 @@ export default function AdminOverview() {
             y supervisa el crecimiento de la infraestructura Zona Sur Tech.
           </p>
         </div>
-        <div className="flex items-center gap-3">
-            <div className="zs-input-wrapper min-w-[300px]">
+        <div className="flex items-center gap-3 w-full lg:w-auto">
+            <div className="zs-input-wrapper flex-1 lg:min-w-[300px]">
                 <Search className="w-4 h-4 text-zs-text-muted absolute left-4 top-1/2 -translate-y-1/2" />
                 <input 
                     type="text" 
@@ -33,7 +73,7 @@ export default function AdminOverview() {
                     className="zs-input pl-12 h-12"
                 />
             </div>
-            <button className="zs-btn-brand h-12 px-6 rounded-xl flex items-center gap-2 text-xs uppercase tracking-widest font-black">
+            <button className="zs-btn-brand h-12 px-6 rounded-xl flex items-center gap-2 text-xs uppercase tracking-widest font-black whitespace-nowrap">
                 Execute Audit
                 <Zap className="w-4 h-4 fill-current" />
             </button>
@@ -45,22 +85,22 @@ export default function AdminOverview() {
         <MetricCard 
           icon={<Users className="text-zs-blue" />} 
           label="Total Users" 
-          value="1,248" 
-          trend="+12.5%" 
+          value={totalUsers.toLocaleString()} 
+          trend="+1.2%" 
           color="blue"
         />
         <MetricCard 
           icon={<Layers className="text-zs-cyan" />} 
           label="Organizations" 
-          value="84" 
-          trend="+5.2%" 
+          value={totalOrgs.toLocaleString()} 
+          trend="+0.0%" 
           color="cyan"
         />
         <MetricCard 
           icon={<Zap className="text-zs-emerald" />} 
           label="API Requests" 
           value="24.8M" 
-          trend="+18.3%" 
+          trend="+0.3%" 
           color="emerald"
         />
         <MetricCard 
@@ -111,42 +151,31 @@ export default function AdminOverview() {
         </div>
 
         {/* Status Feed */}
-        <div className="zs-card p-8 border-zs-border/50 flex flex-col">
+        <div className="zs-card p-8 border-zs-border/50 flex flex-col font-mono">
             <div className="flex items-center gap-3 mb-8">
                 <Activity className="w-5 h-5 text-zs-violet" />
                 <h2 className="text-xl font-black text-white uppercase italic tracking-widest">Recent Events</h2>
             </div>
             
-            <div className="flex-1 space-y-6">
-                <EventItem 
-                    title="User Registered" 
-                    desc="New node: alex@dev.null" 
-                    time="2m ago" 
-                    type="success"
-                />
-                <EventItem 
-                    title="API Limit Exceeded" 
-                    desc="Organization: Cyberdyne Systems" 
-                    time="15m ago" 
-                    type="warning"
-                />
-                <EventItem 
-                    title="Org Created" 
-                    desc="Identity: Zero Day Labs" 
-                    time="45m ago" 
-                    type="success"
-                />
-                <EventItem 
-                    title="Kernel Update" 
-                    desc="Patch v4.2.0 deployed" 
-                    time="2h ago" 
-                    type="info"
-                />
+            <div className="flex-1 space-y-6 overflow-hidden">
+                {recentLogs.length > 0 ? (
+                    recentLogs.map((log: any) => (
+                        <EventItem 
+                            key={log.id}
+                            title={log.action.replace(/_/g, ' ')} 
+                            desc={`${log.organizations?.name || 'Global'}: ${JSON.stringify(log.metadata).substring(0, 40)}...`} 
+                            time={new Date(log.created_at).toLocaleTimeString()} 
+                            type={log.action.includes('error') ? 'error' : log.action.includes('delete') ? 'warning' : 'success'}
+                        />
+                    ))
+                ) : (
+                    <div className="text-xs text-zs-text-muted py-10 text-center">No activity detected.</div>
+                )}
             </div>
 
-            <button className="mt-8 w-full py-4 border border-zs-border rounded-xl text-[10px] font-black uppercase text-zs-text-muted hover:border-zs-blue hover:text-white transition-all tracking-[0.3em]">
+            <Link href="/admin/activity" className="mt-8 w-full py-4 border border-zs-border rounded-xl text-[10px] font-black uppercase text-zs-text-muted hover:border-zs-blue hover:text-white transition-all tracking-[0.3em] flex items-center justify-center">
                 View System Logs
-            </button>
+            </Link>
         </div>
       </div>
     </div>

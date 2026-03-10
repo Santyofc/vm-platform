@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Activity, Users, Shield, Zap, ExternalLink } from "lucide-react";
+import { Activity, Users, Shield, Zap, ExternalLink, Terminal } from "lucide-react";
+import Link from "next/link";
 import { ActivityFeed } from "../ActivityFeed";
 import { apiListActivity, type ActivityLogEntry } from "@/lib/api";
 import { Spinner } from "../ui-primitives";
@@ -18,6 +19,7 @@ interface DashboardContentProps {
       email: string;
       name: string;
     };
+    isSuperAdmin?: boolean;
   };
 }
 
@@ -64,19 +66,33 @@ export function DashboardContent({ session }: DashboardContentProps) {
       className="max-w-6xl mx-auto space-y-8 pb-12"
     >
       {/* Header */}
-      <motion.header variants={itemVariants} className="flex flex-col gap-2">
-        <h1 className="text-4xl font-black text-white tracking-tighter uppercase italic">
-          Centro de <span className="text-zs-blue shadow-zs-glow-blue">Operaciones</span>
-        </h1>
-        <div className="flex items-center gap-3">
-          <p className="text-zs-text-secondary text-sm font-medium tracking-widest uppercase">
-            Workspace: <span className="text-white">{session.organizationName}</span>
-          </p>
-          <div className="w-1 h-1 rounded-full bg-zs-border" />
-          <p className="text-zs-text-secondary text-sm font-medium tracking-widest uppercase">
-            Estatus: <span className="text-zs-green animate-pulse">En Línea</span>
-          </p>
+      <motion.header variants={itemVariants} className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-4xl font-black text-white tracking-tighter uppercase italic">
+            Centro de <span className="text-zs-blue shadow-zs-glow-blue">Operaciones</span>
+          </h1>
+          <div className="flex items-center gap-3">
+            <p className="text-zs-text-secondary text-sm font-medium tracking-widest uppercase">
+              Workspace: <span className="text-white">{session.organizationName}</span>
+            </p>
+            <div className="w-1 h-1 rounded-full bg-zs-border" />
+            <p className="text-zs-text-secondary text-sm font-medium tracking-widest uppercase">
+              Estatus: <span className="text-zs-green animate-pulse">En Línea</span>
+            </p>
+          </div>
         </div>
+
+        {session.isSuperAdmin && (
+          <Link 
+            href="/admin" 
+            className="group relative flex items-center gap-3 px-6 py-3 rounded-xl bg-zs-violet/10 border border-zs-violet/30 hover:bg-zs-violet/20 hover:border-zs-violet transition-all duration-300 overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-zs-violet/0 via-zs-violet/5 to-zs-violet/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+            <Terminal className="w-4 h-4 text-zs-violet group-hover:scale-110 transition-transform" />
+            <span className="text-xs font-black text-zs-violet uppercase tracking-[0.2em]">Open Admin Terminal</span>
+            <div className="w-1.5 h-1.5 rounded-full bg-zs-violet animate-pulse shadow-zs-glow-violet" />
+          </Link>
+        )}
       </motion.header>
 
       {/* Stats Grid */}
